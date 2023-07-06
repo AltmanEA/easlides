@@ -1,4 +1,4 @@
-import Deck, { VERSION } from '../reveal.js/js/reveal';
+import Deck from '../reveal.js/js/reveal';
 import '../reveal.js/dist/reveal.css';
 import '../reveal.js/dist/theme/white.css';
 import RevealMarkdown from '../reveal.js/plugin/markdown/markdown'
@@ -6,20 +6,32 @@ import './plugins/audio-slideshow/plugin';
 import './plugins/audio-slideshow/recorder';
 import RecordRTC from './plugins/audio-slideshow/RecordRTC';
 
-window.slide_init = function slide_init() {
-  const deck = new Deck({
-    embedded: true,
+import {setState, setListeners} from './state';
+import './quiz.css'
+
+window.slide_init = function slide_init(id="noid", state={}) {
+  window.EASlides = {};
+  window.EASlides.id = id;
+
+  const reveal = new Deck({
+    // embedded: true,
     plugins: [RevealMarkdown, RevealAudioSlideshow, RevealAudioRecorder],
-    // audio: {
-    //   prefix: filename + '/',
-    //   suffix: '.mp3',
-    // },
+    audio: {
+      prefix: 'audio/',
+      suffix: '.mp3',
+      advance: -1
+    },
   });
-  deck.initialize();
+  reveal.initialize();
+
   window.RecordRTC = RecordRTC;
-  window.Reveal = deck;
-  return deck;
+  window.Reveal = reveal;
+
+  setState(state);
+  setListeners();
+
+  return reveal;
 }
 
-// slide_init();
+slide_init();
 

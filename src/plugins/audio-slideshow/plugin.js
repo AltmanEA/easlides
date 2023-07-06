@@ -409,7 +409,11 @@ const initAudioSlideshow = function(Reveal){
 		} );
 		audioElement.addEventListener( 'pause', function( event ) {
 			if ( timer ) { clearTimeout( timer ); timer = null; }
-			document.dispatchEvent( new CustomEvent('stopplayback') );
+			// EA
+			var evt = new CustomEvent('stopplayback');
+			evt.ended = audioElement.ended;			
+			// /EA
+			document.dispatchEvent( evt );
 		} );
 		audioElement.addEventListener( 'seeked', function( event ) {
 			var evt = new CustomEvent('seekplayback');
