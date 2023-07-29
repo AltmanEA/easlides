@@ -5,9 +5,13 @@ export const setState = (state = "{}") => {
     window.EASlides.state = state
 }
 
-const saveState = () => {
-    var saveEvent = new CustomEvent("saveState")
-    saveEvent.state = window.EASlides.state
+const changeState = (kind, slide) => {
+    // kind:
+    // audio: done
+    // quiz: pass, fail
+    var saveEvent = new CustomEvent("changeState")
+    saveEvent.kind = kind
+    saveEvent.slide = slide
     document.dispatchEvent(saveEvent)
 }
 
@@ -17,7 +21,7 @@ const getSlideKey = () =>
 
 const setSlideState = (state) => {
     window.EASlides.state[getSlideKey()] = state
-    console.log(window.EASlides)
+    // console.log(window.EASlides)
 }
 
 const getSlideState = () =>
@@ -28,11 +32,13 @@ export const setListeners = () => {
     setAudioListeners()
     document.addEventListener("quizDone", (e) => {
         setSlideState(e.state)
-        saveState()
+        if (e.state)
+            changeState("pass", getSlideKey())
+        else
+            changeState("fail", getSlideKey())
     });
     document.addEventListener("resetSlide", (e) => {
-        setState()
-        saveState()
+        setState()        
     });
 };
 
@@ -47,7 +53,12 @@ const onSlide = (event) => {
     window.Reveal.layout()
 }
 const setRevealListeners = () => {
-    window.Reveal.on('ready', onSlide)
+    window.Reveal.on('ready', (event) => {
+        onSlide(event)
+        var readyEvent = new CustomEvent("revealReady")
+        readyEvent.nSlides = window.Reveal.getTotalSlides();
+        document.dispatchEvent(readyEvent)
+    })
     window.Reveal.on('slidechanged', onSlide)
 }
 
@@ -61,7 +72,7 @@ const setAudioListeners = () => {
         if (e.ended) {
             if (getSlideState() == "start") {
                 setSlideState("done");
-                saveState();
+                changeState("done", getSlideKey())
             }
         }
     });

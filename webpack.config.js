@@ -32,5 +32,6 @@ module.exports = {
             type: 'umd',
         },
     },
+    devtool: "source-map",
 };
 

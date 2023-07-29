@@ -9,15 +9,15 @@ import RecordRTC from './plugins/audio-slideshow/RecordRTC';
 import {setState, setListeners} from './state';
 import './quiz.css'
 
-window.slide_init = function slide_init(id="noid", state={}) {
+window.slide_init = function slide_init(url="noid", state={}) {
   window.EASlides = {};
-  window.EASlides.id = id;
+  window.EASlides.url = url;
 
   const reveal = new Deck({
     // embedded: true,
     plugins: [RevealMarkdown, RevealAudioSlideshow, RevealAudioRecorder],
     audio: {
-      prefix: 'audio/',
+      prefix: url,
       suffix: '.mp3',
       advance: -1
     },
@@ -33,5 +33,5 @@ window.slide_init = function slide_init(id="noid", state={}) {
   return reveal;
 }
 
-slide_init();
+// slide_init();
 
