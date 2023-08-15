@@ -5,23 +5,16 @@ export const setState = (state = "{}") => {
     window.EASlides.state = state
 }
 
-const changeState = (kind, slide) => {
-    // kind:
-    // audio: done
-    // quiz: pass, fail
-    var saveEvent = new CustomEvent("changeState")
-    saveEvent.kind = kind
-    saveEvent.slide = slide
-    document.dispatchEvent(saveEvent)
+export const changeState = (kind, slide, code) => {
+    window.Courser.pageDone(slide, kind, code)
 }
 
 const getSlideKeyBy = (indexh, indexv) => indexh * 100 + indexv
-const getSlideKey = () =>
+export const getSlideKey = () =>
     getSlideKeyBy(window.EASlides.indexh, window.EASlides.indexv)
 
 const setSlideState = (state) => {
     window.EASlides.state[getSlideKey()] = state
-    // console.log(window.EASlides)
 }
 
 const getSlideState = () =>
@@ -30,22 +23,14 @@ const getSlideState = () =>
 export const setListeners = () => {
     setRevealListeners()
     setAudioListeners()
-    document.addEventListener("quizDone", (e) => {
-        setSlideState(e.state)
-        if (e.state)
-            changeState("pass", getSlideKey())
-        else
-            changeState("fail", getSlideKey())
-    });
-    document.addEventListener("resetSlide", (e) => {
-        setState()        
-    });
-};
+    setCourserListeners()
+}
 
 // reveal event
 const onSlide = (event) => {
     window.EASlides.indexh = event.indexh
     window.EASlides.indexv = event.indexv
+    window.EASlides.slideIsDone = window.Courser.pageIsDone(getSlideKey())
     if (initQuiz(event.currentSlide))
         window.EASlides.type = "quiz"
     else
@@ -53,12 +38,7 @@ const onSlide = (event) => {
     window.Reveal.layout()
 }
 const setRevealListeners = () => {
-    window.Reveal.on('ready', (event) => {
-        onSlide(event)
-        var readyEvent = new CustomEvent("revealReady")
-        readyEvent.nSlides = window.Reveal.getTotalSlides();
-        document.dispatchEvent(readyEvent)
-    })
+    window.Reveal.on('ready', onSlide)
     window.Reveal.on('slidechanged', onSlide)
 }
 
@@ -66,20 +46,26 @@ const setRevealListeners = () => {
 const setAudioListeners = () => {
     document.addEventListener("startplayback", (e) => {
         if (window.EASlides.type == "audio")
-            setSlideState("start");
-    });
+            setSlideState("start")
+    })
     document.addEventListener("stopplayback", (e) => {
         if (e.ended) {
             if (getSlideState() == "start") {
-                setSlideState("done");
+                setSlideState("done")
                 changeState("done", getSlideKey())
             }
         }
-    });
+    })
     document.addEventListener("seekplayback", (e) => {
         if (getSlideState() == "start")
-            setSlideState("");
-    });
+            setSlideState("")
+    })
 }
 
-
+// courser event
+const setCourserListeners = () => {
+    document.addEventListener("resetSlide", () => {
+        window.EASlides.state = {}
+        window.Reveal.slide(0, 0, 0)
+    })
+}

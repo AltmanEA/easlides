@@ -1,3 +1,5 @@
+import { changeState, getSlideKey } from "./state";
+
 export const initQuiz = (slide) => {
     let quizDiv = slide.getElementsByClassName("quiz")[0]
     if (quizDiv == undefined) return false
@@ -9,9 +11,9 @@ export const initQuiz = (slide) => {
     quiz.order = new Array(quiz.size)
     quiz.questions = new Array(quiz.size)
     quiz.marked = new Array(quiz.size)
-    for (let i = 0; i < quiz.size; i++) 
+    for (let i = 0; i < quiz.size; i++)
         quiz.order[i] = i
-    if (quiz.data.order != true) 
+    if (quiz.data.order != true)
         shuffle(quiz.order)
     for (let i = 0; i < quiz.size; i++) {
         quiz.questions[i] = quiz.data.answers[quiz.order[i]]
@@ -21,35 +23,47 @@ export const initQuiz = (slide) => {
     quiz.class = (index) => {
         const quiz = window.EASlides.quiz
         if (quiz.isCommit) {
-            return "quiz-"+quiz.answers[index]
+            return "quiz-" + quiz.answers[index]
         } else {
             if (quiz.marked[index])
                 return "quiz-marked"
             else
                 return "quiz-unmarked"
         }
+    }    
+    if (!window.EASlides.slideIsDone) {
+        quiz.onAnswer = (index) => {
+            const quiz = window.EASlides.quiz
+            if (!quiz.isCommit)
+                quiz.marked[index] = !quiz.marked[index]
+            drawQuiz()
+        }
+        quiz.onCommit = () => {
+            checkQuiz()
+            const ans = answersInDataOrder(quiz)
+            const code = arrayToCode(ans)
+            if (quiz.isSuccess)
+                changeState("pass", getSlideKey(), code)
+            else
+                changeState("fail", getSlideKey(), code)
+            finishQuiz(quiz)
+            drawQuiz()
+        }
+    } else {
+        const resultCode = window.EASlides.slideIsDone.result
+        quiz.marked = codeToArray(resultCode)
+        checkQuiz(quiz)
+        finishQuiz(quiz)
     }
-    quiz.onAnswer = (index) => {
-        const quiz = window.EASlides.quiz
-        if (!quiz.isCommit)
-            quiz.marked[index] = !quiz.marked[index]
-        drawQuiz()
-    }
-    quiz.isCommit = false
-    quiz.onCommit = () => { 
-        checkQuiz(); 
-        drawQuiz();
-        quiz.isCommit = true;
-        var saveEvent = new CustomEvent("quizDone")
-        saveEvent.state = quiz.isSuccess
-        document.dispatchEvent(saveEvent)       
-    }
-
-    // console.log(quiz)
     window.EASlides.quiz = quiz
-
     drawQuiz()
     return true
+}
+
+function finishQuiz(quiz) {
+    quiz.isCommit = true
+    quiz.onCommit = () => { }
+    quiz.onAnswer = () => { }
 }
 
 function drawQuiz() {
@@ -68,14 +82,14 @@ function drawQuiz() {
     }
     html += "</ul>"
     html += "<p><button onClick=window.EASlides.quiz.onCommit() "
+    html += quiz.isCommit ? "disabled" : ""
     html += "class='quiz-button'>Ответить</button></p>"
     html += "</div>"
 
     quiz.slide.insertAdjacentHTML("afterbegin", html);
 }
 
-function checkQuiz() {
-    const quiz = window.EASlides.quiz
+function checkQuiz(quiz = window.EASlides.quiz) {
     quiz.answers = Array(quiz.size)
     quiz.isSuccess = true
     for (let i = 0; i < quiz.size; i++) {
@@ -95,6 +109,35 @@ function checkQuiz() {
             else
                 quiz.answers[i] = "none"
     }
+}
+
+function answersInDataOrder(quiz) {
+    const size = quiz.marked.length
+    const result = Array(size)
+    for (let i = 0; i < size; i++)
+        result[quiz.order[i]] = quiz.marked[i]
+    return result
+}
+
+function arrayToCode(arr) {
+    var pow = 1
+    var result = 0
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i])
+            result += pow
+        pow *= 2
+    }
+    return result
+}
+
+function codeToArray(code) {
+    const result = []
+    while (code > 0) {
+        const rem = code % 2
+        result.push(rem)
+        code = (code - rem) / 2
+    }
+    return result
 }
 
 // https://habr.com/ru/post/358094/
