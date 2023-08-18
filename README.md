@@ -2,6 +2,6 @@ Wrapping Reavel.js for use as a library.
 
 npm run dev
 
-xcopy .\dist\* ..\courser\public\    
+xcopy .\dist\asset\* ..\courser\public\static\asset\
 
-xcopy .\dist\ea* ..\courser\public\   
+xcopy .\dist\js\* ..\courser\public\static\js\   

@@ -25,11 +25,15 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'easlides.js',
+        filename: 'js/easlides.js',
         globalObject: 'this',
         library: {
             name: 'ealides',
             type: 'umd',
+        },
+        assetModuleFilename: pathData => {
+            const filepath = path.dirname(pathData.filename).split('/').slice(1).join('/');
+            return `/asset/[name][ext]`;
         },
     },
     devtool: "source-map",
