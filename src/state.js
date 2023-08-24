@@ -30,7 +30,11 @@ export const setListeners = () => {
 const onSlide = (event) => {
     window.EASlides.indexh = event.indexh
     window.EASlides.indexv = event.indexv
-    window.EASlides.slideIsDone = window.Courser.pageIsDone(getSlideKey())
+    try{
+        window.EASlides.slideIsDone = window.Courser.pageIsDone(getSlideKey())
+    } catch(_){
+        window.EASlides.slideIsDone = () => false
+    }
     if (initQuiz(event.currentSlide))
         window.EASlides.type = "quiz"
     else

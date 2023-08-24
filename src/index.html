@@ -7,47 +7,10 @@
 </head>
 
 <body>
-  <div class="reveal">
+  <div class="reveal" style="height: '90vh'">
     <div class="slides">
-      <section data-markdown>
-        <textarea data-template>
-                  ## Slide 1
-                  A paragraph with some text and a [link](https://hakim.se).
-                  ---
-                  ## Slide 2
-                  ---
-                  ## Slide 3
-                  ---
-                  <div class='quiz' data-quiz='{ 
-                    "question": "Вопрос с одним правильным ответом <img src=\"https://bibliomo.ru/upload/iblock/27a/0_10_scaled.jpg\" width=10%>",
-                    "type": "Single",
-                    "answers": [
-                        { "isRight":true, "text":"<b>Ответ 1</b>"},
-                        { "isRight":false, "text":"Ответ 2"},
-                        { "isRight":false, "text":"Ответ 3"}
-                    ]
-                }'></div>
-                  ---
-                  <div class='quiz' data-quiz='{ 
-                  "question": "Вопрос с несколькими правильными ответами",
-                  "type": "Multi",
-                  "answers": [
-                      { "isRight":true, "text":"Ответ 1"},
-                      { "isRight":false, "text":"Ответ 2"},
-                      { "isRight":true, "text":"Ответ 3"}
-                  ] 
-              }'></div>
-                  ---
-              <div class='quiz' data-quiz='{ 
-                "question": "Вопрос на соответствие",
-                "type": "Match",
-                "answers": [
-                    { "claim":"Термин 1", "text":"Определение 1"},
-                    { "claim":"Термин 2", "text":"Определение 2"},
-                    { "claim":"Термин 3", "text":"Определение 3"}
-                ] 
-            }'></div>
-                </textarea>
+      <section data-markdown="http://127.0.0.1:8080/example.md" 
+        data-separator="^---$" data-separator-vertical="----$">
       </section>
     </div>
   </div>
