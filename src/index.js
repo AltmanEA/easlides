@@ -54,5 +54,6 @@ window.slide_init = function slide_init(url = ".", state = {}) {
   return reveal;
 }
 
-slide_init("http://127.0.0.1:8080/example/")
+// slide_init("http://127.0.0.1:8080/example/")
+
 

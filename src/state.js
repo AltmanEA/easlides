@@ -6,7 +6,11 @@ export const setState = (state = "{}") => {
 }
 
 export const changeState = (kind, slide, code) => {
-    window.Courser.pageDone(slide, kind, code)
+    try {
+        window.Courser.pageDone(slide, kind, code)
+    } catch (e) {
+        console.log("Courser not found")
+    }
 }
 
 const getSlideKeyBy = (indexh, indexv) => indexh * 100 + indexv
@@ -30,9 +34,9 @@ export const setListeners = () => {
 const onSlide = (event) => {
     window.EASlides.indexh = event.indexh
     window.EASlides.indexv = event.indexv
-    try{
+    try {
         window.EASlides.slideIsDone = window.Courser.pageIsDone(getSlideKey())
-    } catch(_){
+    } catch (_) {
         window.EASlides.slideIsDone = () => false
     }
     if (initQuiz(event.currentSlide))
@@ -53,10 +57,12 @@ const setAudioListeners = () => {
             setSlideState("start")
     })
     document.addEventListener("stopplayback", (e) => {
-        if (e.ended) {
+        if (e.audio.ended) {
             if (getSlideState() == "start") {
-                setSlideState("done")
-                changeState("done", getSlideKey())
+                if (e.audio.currentTime > 5) {
+                    setSlideState("done")
+                    changeState("done", getSlideKey())
+                }
             }
         }
     })

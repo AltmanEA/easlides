@@ -411,7 +411,7 @@ const initAudioSlideshow = function(Reveal){
 			if ( timer ) { clearTimeout( timer ); timer = null; }
 			// EA
 			var evt = new CustomEvent('stopplayback');
-			evt.ended = audioElement.ended;			
+			evt.audio = audioElement;			
 			// /EA
 			document.dispatchEvent( evt );
 		} );
