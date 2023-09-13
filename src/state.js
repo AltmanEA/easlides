@@ -57,14 +57,15 @@ const setAudioListeners = () => {
             setSlideState("start")
     })
     document.addEventListener("stopplayback", (e) => {
-        if (e.audio.ended) {
-            if (getSlideState() == "start") {
-                if (e.audio.currentTime > 5) {
-                    setSlideState("done")
-                    changeState("done", getSlideKey())
+        if (e.audio)
+            if (e.audio.ended) {
+                if (getSlideState() == "start") {
+                    if (e.audio.currentTime > 5) {
+                        setSlideState("done")
+                        changeState("done", getSlideKey())
+                    }
                 }
             }
-        }
     })
     document.addEventListener("seekplayback", (e) => {
         if (getSlideState() == "start")
