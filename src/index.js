@@ -10,6 +10,7 @@ import RecordRTC from './plugins/audio-slideshow/RecordRTC';
 import { marked } from "marked"
 
 import { setState, setListeners } from './state';
+import './index.css'
 import './quiz.css'
 
 window.slide_init = function slide_init(url = ".", state = {}) {
