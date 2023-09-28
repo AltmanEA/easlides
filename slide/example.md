@@ -1,6 +1,22 @@
+### Relative html path image
+
+<div style="display: flex;">
+    <div style="flex: 2;">
+    <a href="mem3.jpg">aaa</a>
+    <a href="mem4.jpg">bbb</a>
+    </div>
+    <div style="flex: 3; border:1px solid black;">
+    <img src="mem1.jpg"/>
+    <img src="mem2.jpg"/>
+    <div>
+<div>
+
+----
+
 ### Relative path image
 
 ![](mem1.jpg)
+
 
 ----
 

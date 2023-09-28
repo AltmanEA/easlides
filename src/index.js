@@ -7,30 +7,16 @@ import './github.css'
 import './plugins/audio-slideshow/plugin';
 import './plugins/audio-slideshow/recorder';
 import RecordRTC from './plugins/audio-slideshow/RecordRTC';
-import { marked } from "marked"
 
 import { setState, setListeners } from './state';
-import './index.css'
+import { makeRender } from './render';
 import './quiz.css'
 
 window.slide_init = function slide_init(url = ".", state = {}) {
   window.EASlides = {};
   window.EASlides.url = url;
 
-  const makeUrl = (urlString) => {
-    if (urlString.indexOf('http://') === 0 || urlString.indexOf('https://') === 0)
-      return urlString
-    else
-      return url + urlString
-  }
-
-  const renderer = new marked.Renderer();
-  renderer.image = function (href, title, text) {
-    return `<img src=${makeUrl(href)} />`
-  }
-  renderer.link = function (href, title, text) {
-    return `<a href=${makeUrl(href)}>${text}</a>`
-  }
+  const renderer = makeRender(url)
 
   const reveal = new Deck({
     // embedded: true,
